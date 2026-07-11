@@ -1,7 +1,23 @@
 # GitHub + jsDelivr 免费图床
 
 账号：`luohui1`  
-仓库用途：把图片提交到本仓库的 `images/`，用 jsDelivr CDN 当外链。
+仓库：把图片放进 `images/`，用 jsDelivr 当 CDN；网页端可浏览 / 上传。
+
+## 前端（GitHub Pages）
+
+部署后访问：
+
+```text
+https://luohui1.github.io/github-image-host/
+```
+
+功能：
+- **图库**：点击图片复制 jsDelivr 外链
+- **上传**：拖拽上传（需在「设置」填 GitHub Token）
+- **设置**：Token 只存在浏览器 localStorage
+
+Token 创建：https://github.com/settings/tokens  
+需要 `repo`（经典）或 Contents Read and write（细粒度）。
 
 ## 链接格式
 
@@ -9,51 +25,32 @@
 https://cdn.jsdelivr.net/gh/<owner>/<repo>@<branch>/images/<filename>
 ```
 
-示例（仓库创建并推送后）：
+示例：
 
 ```text
-https://cdn.jsdelivr.net/gh/luohui1/github-image-host@main/images/demo-20260711-142300.png
+https://cdn.jsdelivr.net/gh/luohui1/github-image-host@main/images/demo.svg
 ```
 
-备用（不走 CDN）：
-
-```text
-https://raw.githubusercontent.com/<owner>/<repo>/<branch>/images/<filename>
-```
-
-## 上传图片
-
-在仓库根目录执行：
+## 命令行上传
 
 ```powershell
+cd D:\Flies\github-image-host
 .\upload.ps1 .\你的图片.png
 .\upload.ps1 C:\path\to\photo.jpg -Name avatar
 ```
 
-脚本会：复制到 `images/` → `git commit` → `git push` → 打印并复制 jsDelivr 链接。
+脚本会更新 `images/manifest.json`，供前端图库读取。
 
-只提交不推送：
+## 限制
 
-```powershell
-.\upload.ps1 .\a.png -NoPush
-```
-
-## 限制（建议遵守）
-
-- 单文件建议 **≤ 5MB**
-- 适合个人博客 / 笔记 / 低频外链
-- 不要当公开大流量图床（易触发 GitHub / jsDelivr 限制）
-- 仓库请保持 **Public**，jsDelivr 才能稳定访问
-
-## 手动上传
-
-1. 把图片放进 `images/`
-2. `git add` → `commit` → `push`
-3. 按上面的 URL 规则拼链接
+- 单文件建议 ≤ 5MB
+- 适合个人低频外链
+- 仓库保持 **Public**
 
 ## 目录
 
 ```text
-images/       # 图片存放
-upload.ps1    # 一键上传脚本
+index.html / assets/   # 前端
+images/                # 图片 + manifest.json
+upload.ps1             # 命令行上传
 ```

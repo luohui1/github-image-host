@@ -76,7 +76,23 @@ $destName = "$base-$stamp$ext"
 $destPath = Join-Path $imagesDir $destName
 Copy-Item -LiteralPath $src.FullName -Destination $destPath -Force
 
-& $Git add -- "images/$destName"
+function Update-Manifest {
+  param([string]$Dir)
+  $files = Get-ChildItem -LiteralPath $Dir -File |
+    Where-Object { $_.Name -match '\.(png|jpe?g|gif|webp|svg|bmp|ico)$' } |
+    Sort-Object Name -Descending |
+    ForEach-Object { $_.Name }
+  $manifest = [ordered]@{
+    updatedAt = (Get-Date).ToUniversalTime().ToString("o")
+    files     = @($files)
+  }
+  $json = $manifest | ConvertTo-Json -Depth 5
+  Set-Content -LiteralPath (Join-Path $Dir "manifest.json") -Value $json -Encoding utf8
+}
+
+Update-Manifest -Dir $imagesDir
+
+& $Git add -- "images/$destName" "images/manifest.json"
 $msg = "upload: $destName"
 & $Git commit -m $msg | Out-Null
 
