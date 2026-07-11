@@ -1,19 +1,19 @@
 # Active Context
 
 ## Current Focus
-Image host is live; ready for daily uploads via upload.ps1.
+Frontend (Framebin) is live on GitHub Pages.
 
 ## Recent Changes
-- Created public repo https://github.com/luohui1/github-image-host
-- Pushed scaffold + demo.svg
-- Fixed push auth with `gh auth setup-git`
+- Added index.html + assets (gallery / upload / settings)
+- Added images/manifest.json
+- Enabled GitHub Pages on main/
 
 ## Next Steps
-1. Use `.\upload.ps1 <image>` for new images
-2. Prefer jsDelivr URL; raw.githubusercontent.com as fallback
+1. User creates a GitHub Token and pastes it in Settings for browser upload
+2. Optional: open Pages URL and verify gallery
 
 ## Active Decisions
-- Repo: luohui1/github-image-host (public, main)
+- Pages URL: https://luohui1.github.io/github-image-host/
 
 ## Blockers
-- Local `D:\APPS\Git` may miss `git-remote-https`; prefer `C:\Program Files\Git` or keep gh credential helper working
+- Browser upload requires user-provided PAT
