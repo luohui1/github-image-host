@@ -1,18 +1,19 @@
 # Active Context
 
 ## Current Focus
-Bootstrap GitHub + jsDelivr image host for luohui1.
+Image host is live; ready for daily uploads via upload.ps1.
 
 ## Recent Changes
-- Created project at D:\Flies\github-image-host
-- Added upload.ps1, README, images/
+- Created public repo https://github.com/luohui1/github-image-host
+- Pushed scaffold + demo.svg
+- Fixed push auth with `gh auth setup-git`
 
 ## Next Steps
-1. Create public GitHub repo and push
-2. Upload a test image and verify jsDelivr URL
+1. Use `.\upload.ps1 <image>` for new images
+2. Prefer jsDelivr URL; raw.githubusercontent.com as fallback
 
 ## Active Decisions
-- Using repo name `github-image-host` under luohui1
+- Repo: luohui1/github-image-host (public, main)
 
 ## Blockers
-- None
+- Local `D:\APPS\Git` may miss `git-remote-https`; prefer `C:\Program Files\Git` or keep gh credential helper working

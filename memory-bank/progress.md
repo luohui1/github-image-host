@@ -4,16 +4,18 @@
 - [x] Local project scaffold
 - [x] upload.ps1
 - [x] README + memory bank
+- [x] Create GitHub repo and first push
+- [x] Upload smoke-test image (images/demo.svg)
 
 ## In Progress
-- [ ] Create GitHub repo and first push
+- None
 
 ## Planned
-- [ ] Upload smoke-test image
-- [ ] Confirm jsDelivr URL works
+- [ ] Optional: pin jsDelivr by commit hash for cache stability
 
 ## Known Issues
-- None yet
+- Incomplete Git install at D:\APPS\Git (missing remote-https); Program Files Git works
 
 ## Metrics
 - Hosting cost: $0
+- Repo: https://github.com/luohui1/github-image-host

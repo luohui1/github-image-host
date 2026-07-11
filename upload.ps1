@@ -21,6 +21,27 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $repoRoot
 
+function Resolve-GitExe {
+  $candidates = @(
+    "C:\Program Files\Git\cmd\git.exe",
+    "C:\Program Files (x86)\Git\cmd\git.exe",
+    "D:\APPS\Git\cmd\git.exe"
+  )
+  foreach ($c in $candidates) {
+    if (Test-Path -LiteralPath $c) {
+      $helper = Join-Path (Split-Path (Split-Path $c)) "mingw64\libexec\git-core\git-remote-https.exe"
+      if ((Test-Path -LiteralPath $helper) -or ($c -like "*Program Files*")) {
+        return $c
+      }
+    }
+  }
+  $fromPath = Get-Command git -ErrorAction SilentlyContinue
+  if ($fromPath) { return $fromPath.Source }
+  throw "Git not found. Install Git for Windows."
+}
+
+$Git = Resolve-GitExe
+
 if (-not (Test-Path -LiteralPath $Path)) {
   throw "File not found: $Path"
 }
@@ -55,11 +76,11 @@ $destName = "$base-$stamp$ext"
 $destPath = Join-Path $imagesDir $destName
 Copy-Item -LiteralPath $src.FullName -Destination $destPath -Force
 
-git add -- "images/$destName"
+& $Git add -- "images/$destName"
 $msg = "upload: $destName"
-git commit -m $msg | Out-Null
+& $Git commit -m $msg | Out-Null
 
-$remote = (git remote get-url origin 2>$null)
+$remote = (& $Git remote get-url origin 2>$null)
 if (-not $remote) {
   Write-Host "Committed locally: images/$destName"
   Write-Host "No git remote yet. Create the GitHub repo first, then re-run push."
@@ -74,10 +95,16 @@ if ($remote -match 'github\.com[:/](?<owner>[^/]+)/(?<repo>[^/.]+)') {
   throw "Cannot parse GitHub owner/repo from remote: $remote"
 }
 
-$branch = (git rev-parse --abbrev-ref HEAD).Trim()
+$branch = (& $Git rev-parse --abbrev-ref HEAD).Trim()
 
 if (-not $NoPush) {
-  git push -u origin HEAD
+  & $Git push -u origin HEAD
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "git push failed; trying gh auth setup-git then retry..."
+    gh auth setup-git | Out-Null
+    & $Git push -u origin HEAD
+    if ($LASTEXITCODE -ne 0) { throw "git push failed" }
+  }
 }
 
 $cdn = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/images/$destName"
